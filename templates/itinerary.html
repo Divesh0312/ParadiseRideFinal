@@ -1,0 +1,937 @@
+{% extends "base.html" %}
+{% set title = itinerary.title %}
+
+{% block extra_head %}
+<style>
+.itinerary-container {
+    padding: var(--spacing-xl) 0;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    min-height: calc(100vh - 70px);
+}
+
+.itinerary-header {
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-2xl);
+    margin-bottom: var(--spacing-xl);
+    position: relative;
+    overflow: hidden;
+}
+
+.itinerary-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: var(--gradient-primary);
+}
+
+.itinerary-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.itinerary-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--text-secondary);
+}
+
+.meta-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: var(--font-size-lg);
+}
+
+.meta-content {
+    flex: 1;
+}
+
+.meta-label {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-tertiary);
+}
+
+.meta-value {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.status-upcoming { background: #dbeafe; color: #1e40af; }
+.status-active { background: #dcfce7; color: #166534; }
+.status-completed { background: #f3f4f6; color: #6b7280; }
+
+.itinerary-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+}
+
+.itinerary-section {
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    margin-bottom: var(--spacing-xl);
+    overflow: hidden;
+}
+
+.section-header {
+    background: var(--gradient-secondary);
+    color: white;
+    padding: var(--spacing-lg);
+}
+
+.section-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.section-content {
+    padding: var(--spacing-lg);
+}
+
+.day-card {
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-lg);
+    overflow: hidden;
+    transition: var(--transition-fast);
+}
+
+.day-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-md);
+}
+
+.day-header {
+    background: var(--bg-secondary);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.day-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.day-content {
+    padding: var(--spacing-lg);
+}
+
+.activity {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.activity:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.activity-time {
+    min-width: 80px;
+    padding: var(--spacing-sm);
+    background: var(--gradient-primary);
+    color: white;
+    border-radius: var(--radius-md);
+    text-align: center;
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    height: fit-content;
+}
+
+.activity-details {
+    flex: 1;
+}
+
+.activity-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.activity-description {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.6;
+}
+
+.activity-tags {
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-wrap: wrap;
+}
+
+.activity-tag {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--primary-color);
+    color: white;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+}
+
+.budget-breakdown {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.budget-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+}
+
+.budget-category {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.budget-amount {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: var(--font-size-lg);
+}
+
+.total-budget {
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    margin-top: var(--spacing-md);
+}
+
+.recommendations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.recommendation-card {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: var(--transition-normal);
+}
+
+.recommendation-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-color);
+}
+
+.recommendation-image {
+    width: 100%;
+    height: 200px;
+    background: var(--gradient-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: var(--font-size-3xl);
+}
+
+.recommendation-content {
+    padding: var(--spacing-lg);
+}
+
+.recommendation-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.recommendation-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+}
+
+.recommendation-rating {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: #f59e0b;
+    font-weight: 600;
+}
+
+.back-button {
+    position: fixed;
+    bottom: var(--spacing-xl);
+    right: var(--spacing-xl);
+    width: 60px;
+    height: 60px;
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: var(--font-size-xl);
+    cursor: pointer;
+    box-shadow: var(--shadow-lg);
+    transition: var(--transition-normal);
+    z-index: 100;
+}
+
+.back-button:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-xl);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #ff9500, #ffb84d);
+    border: none;
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #e68a00, #ff9500);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 149, 0, 0.3);
+    color: white;
+}
+
+.btn-warning::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-warning:hover::before {
+    left: 100%;
+}
+
+@media (max-width: 768px) {
+    .itinerary-meta {
+        grid-template-columns: 1fr;
+    }
+    
+    .itinerary-actions {
+        flex-direction: column;
+    }
+    
+    .activity {
+        flex-direction: column;
+    }
+    
+    .activity-time {
+        width: fit-content;
+        align-self: flex-start;
+    }
+    
+    .budget-breakdown {
+        grid-template-columns: 1fr;
+    }
+    
+    .recommendations-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.print-hide {
+    display: block;
+}
+
+@media print {
+    .print-hide {
+        display: none !important;
+    }
+    
+    .itinerary-container {
+        background: white;
+        padding: 0;
+    }
+    
+    .itinerary-header, .itinerary-section {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        margin-bottom: 20px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="itinerary-container">
+    <div class="container">
+        <!-- Itinerary Header -->
+        <div class="itinerary-header">
+            <h1 class="itinerary-title">{{ itinerary.title }}</h1>
+            
+            <div class="itinerary-meta">
+                <div class="meta-item">
+                    <div class="meta-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="meta-content">
+                        <div class="meta-label">Destination</div>
+                        <div class="meta-value">{{ itinerary.destination }}</div>
+                    </div>
+                </div>
+                
+                <div class="meta-item">
+                    <div class="meta-icon">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div class="meta-content">
+                        <div class="meta-label">Duration</div>
+                        <div class="meta-value">{{ itinerary.start_date.strftime('%b %d') }} - {{ itinerary.end_date.strftime('%b %d, %Y') }}</div>
+                    </div>
+                </div>
+                
+                <div class="meta-item">
+                    <div class="meta-icon">
+                        <i class="fas fa-rupee-sign"></i>
+                    </div>
+                    <div class="meta-content">
+                        <div class="meta-label">Budget</div>
+                        <div class="meta-value">₹{{ itinerary.budget }}</div>
+                    </div>
+                </div>
+                
+                <div class="meta-item">
+                    <div class="meta-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="meta-content">
+                        <div class="meta-label">Status</div>
+                        <div class="meta-value">
+                            <span class="status-indicator status-{{ itinerary.get_status() }}">
+                                <i class="fas fa-circle" style="font-size: 8px;"></i>
+                                {{ itinerary.get_status() }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="itinerary-actions print-hide">
+                <button class="btn btn-primary" onclick="window.print()">
+                    <i class="fas fa-print"></i> Print Itinerary
+                </button>
+                <button class="btn btn-secondary" onclick="ParadiseRide.copyToClipboard(getItineraryText())">
+                    <i class="fas fa-copy"></i> Copy Details
+                </button>
+                <button class="btn btn-success" onclick="shareItinerary()">
+                    <i class="fas fa-share"></i> Share
+                </button>
+                <button class="btn btn-warning" onclick="optimizeBudget()">
+                    <i class="fas fa-dollar-sign"></i> Optimize Budget
+                </button>
+            </div>
+        </div>
+
+        <!-- Daily Itinerary -->
+        <div class="itinerary-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-route"></i>
+                    Daily Itinerary
+                </h2>
+            </div>
+            <div class="section-content">
+                {% if itinerary.details %}
+                    {% set details = itinerary.details | from_json %}
+                    {% if details.days %}
+                        {% for day in details.days %}
+                            <div class="day-card">
+                                <div class="day-header">
+                                    <h3 class="day-title">Day {{ loop.index }} - {{ day.title }}</h3>
+                                </div>
+                                <div class="day-content">
+                                    {% for activity in day.activities %}
+                                        <div class="activity">
+                                            <div class="activity-time">{{ activity.time }}</div>
+                                            <div class="activity-details">
+                                                <h4 class="activity-title">{{ activity.title }}</h4>
+                                                <p class="activity-description">{{ activity.description }}</p>
+                                                {% if activity.tags %}
+                                                    <div class="activity-tags">
+                                                        {% for tag in activity.tags %}
+                                                            <span class="activity-tag">{{ tag }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="day-card">
+                            <div class="day-content">
+                                <p>{{ itinerary.details }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="day-card">
+                        <div class="day-content">
+                            <p>Detailed itinerary is being prepared. Please check back soon!</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Budget Breakdown -->
+        <div class="itinerary-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-calculator"></i>
+                    Budget Breakdown
+                </h2>
+            </div>
+            <div class="section-content">
+                <div class="budget-breakdown">
+                    {% if itinerary.details %}
+                        {% set details = itinerary.details | from_json %}
+                        {% if details.budget_breakdown %}
+                            <div class="budget-item">
+                                <span class="budget-category">Accommodation (40%)</span>
+                                <span class="budget-amount">₹{{ "{:,}".format(details.budget_breakdown.accommodation) }}</span>
+                            </div>
+                            <div class="budget-item">
+                                <span class="budget-category">Food & Dining (30%)</span>
+                                <span class="budget-amount">₹{{ "{:,}".format(details.budget_breakdown.food) }}</span>
+                            </div>
+                            <div class="budget-item">
+                                <span class="budget-category">Transportation (20%)</span>
+                                <span class="budget-amount">₹{{ "{:,}".format(details.budget_breakdown.transportation) }}</span>
+                            </div>
+                            <div class="budget-item">
+                                <span class="budget-category">Activities (10%)</span>
+                                <span class="budget-amount">₹{{ "{:,}".format(details.budget_breakdown.activities) }}</span>
+                            </div>
+                            <div class="budget-item total-budget">
+                                <span class="budget-category">Total Estimated Budget</span>
+                                <span class="budget-amount">₹{{ "{:,}".format(details.budget_breakdown.total) }}</span>
+                            </div>
+                        {% else %}
+                            <div class="budget-item total-budget">
+                                <span class="budget-category">Budget Range</span>
+                                <span class="budget-amount">{{ itinerary.budget }}</span>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="budget-item total-budget">
+                            <span class="budget-category">Budget Range</span>
+                            <span class="budget-amount">{{ itinerary.budget }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="itinerary-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-star"></i>
+                    Recommendations for {{ itinerary.destination }}
+                </h2>
+            </div>
+            <div class="section-content">
+                <div class="recommendations-grid">
+                    <div class="recommendation-card">
+                        <div class="recommendation-image">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="recommendation-content">
+                            <h4 class="recommendation-title">Local Cuisine</h4>
+                            <p class="recommendation-description">Try the authentic local dishes and street food that {{ itinerary.destination }} is famous for.</p>
+                            <div class="recommendation-rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.8/5</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="recommendation-card">
+                        <div class="recommendation-image">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <div class="recommendation-content">
+                            <h4 class="recommendation-title">Photography Spots</h4>
+                            <p class="recommendation-description">Capture the most Instagram-worthy moments at these scenic locations.</p>
+                            <div class="recommendation-rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.9/5</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="recommendation-card">
+                        <div class="recommendation-image">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                        <div class="recommendation-content">
+                            <h4 class="recommendation-title">Shopping</h4>
+                            <p class="recommendation-description">Discover local markets and shops for unique souvenirs and handicrafts.</p>
+                            <div class="recommendation-rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.7/5</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Back Button -->
+    <button class="back-button print-hide" onclick="history.back()" title="Go Back">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function getItineraryText() {
+    const title = document.querySelector('.itinerary-title').textContent;
+    const destination = '{{ itinerary.destination }}';
+    const dates = '{{ itinerary.start_date.strftime('%b %d') }} - {{ itinerary.end_date.strftime('%b %d, %Y') }}';
+    const budget = '₹{{ itinerary.budget }}';
+    
+    return `${title}\n\nDestination: ${destination}\nDates: ${dates}\nBudget: ${budget}\n\nView full itinerary at: ${window.location.href}`;
+}
+
+function shareItinerary() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ itinerary.title }}',
+            text: 'Check out my travel plan for {{ itinerary.destination }}!',
+            url: window.location.href
+        });
+    } else {
+        ParadiseRide.copyToClipboard(window.location.href);
+        ParadiseRide.showNotification('Itinerary link copied to clipboard!', 'success');
+    }
+}
+
+function optimizeBudget() {
+    const currentBudget = '{{ itinerary.budget }}';
+    const destination = '{{ itinerary.destination }}';
+    const duration = {{ itinerary.duration_days }};
+    
+    if (confirm(`Current budget: ${currentBudget}\n\nWould you like to get budget-optimized suggestions for ${destination}? This will show you cheaper alternatives and cost-saving tips.`)) {
+        // Show loading indicator
+        const optimizeBtn = document.querySelector('button[onclick="optimizeBudget()"]');
+        const originalText = optimizeBtn.innerHTML;
+        optimizeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Optimizing...';
+        optimizeBtn.disabled = true;
+        
+        // Call budget optimization API
+        fetch('/api/optimize_budget', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                itinerary_id: {{ itinerary.id }},
+                destination: destination,
+                duration: duration,
+                current_budget: currentBudget
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Restore button
+            optimizeBtn.innerHTML = originalText;
+            optimizeBtn.disabled = false;
+            
+            if (data.success) {
+                showBudgetOptimizationResults(data.optimization);
+            } else {
+                alert('Error optimizing budget: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            // Restore button
+            optimizeBtn.innerHTML = originalText;
+            optimizeBtn.disabled = false;
+            
+            console.error('Budget optimization error:', error);
+            alert('Sorry, there was an error optimizing your budget. Please try again.');
+        });
+    }
+}
+
+function showBudgetOptimizationResults(optimization) {
+    const modalHtml = `
+        <div id="budgetModal" class="modal" style="display: block; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);">
+            <div class="modal-content" style="background: white; margin: 5% auto; padding: 20px; border-radius: 10px; width: 85%; max-width: 700px; max-height: 85vh; overflow-y: auto;">
+                <span class="close" onclick="closeBudgetModal()" style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+                <h2 style="color: #333; margin-bottom: 20px;"><i class="fas fa-dollar-sign"></i> Budget Optimization Options</h2>
+                
+                <!-- Optimization Level Selector -->
+                <div style="margin-bottom: 25px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                    <h3 style="margin: 0 0 15px 0; color: #333;">Choose Optimization Level:</h3>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <button onclick="showOptimizationLevel('medium')" id="mediumBtn" class="optimization-btn" style="flex: 1; min-width: 200px; padding: 12px; border: 2px solid #28a745; background: #28a745; color: white; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            📊 Medium Optimization<br>
+                            <small style="opacity: 0.9;">Save 20-30% • Balanced approach</small>
+                        </button>
+                        <button onclick="showOptimizationLevel('high')" id="highBtn" class="optimization-btn" style="flex: 1; min-width: 200px; padding: 12px; border: 2px solid #dc3545; background: white; color: #dc3545; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            🔥 High Optimization<br>
+                            <small style="opacity: 0.8;">Save 70-80% • Budget traveler</small>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Optimization Results -->
+                <div id="optimizationResults" style="margin-bottom: 20px;">
+                    <div style="padding: 15px; background: #d4edda; border-radius: 8px; border-left: 4px solid #28a745; margin-bottom: 20px;">
+                        <h3 style="margin: 0 0 10px 0; color: #155724;" id="savingsTitle">💰 Medium Optimization - Save ${optimization.medium.savings}</h3>
+                        <p style="margin: 0; font-size: 14px; color: #155724;" id="budgetSummary">Original: ${optimization.original_budget} → Optimized: ${optimization.medium.optimized_budget}</p>
+                    </div>
+                    
+                    <div id="optimizationTips">
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: #333; margin-bottom: 15px;">🏠 Accommodation Tips</h3>
+                            <ul style="margin: 0; padding-left: 20px;" id="accommodationTips">
+                                ${optimization.medium.accommodation_tips.map(tip => `<li style="margin-bottom: 8px;">${tip}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: #333; margin-bottom: 15px;">🍽️ Food & Dining Tips</h3>
+                            <ul style="margin: 0; padding-left: 20px;" id="foodTips">
+                                ${optimization.medium.food_tips.map(tip => `<li style="margin-bottom: 8px;">${tip}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: #333; margin-bottom: 15px;">🚗 Transportation Tips</h3>
+                            <ul style="margin: 0; padding-left: 20px;" id="transportTips">
+                                ${optimization.medium.transport_tips.map(tip => `<li style="margin-bottom: 8px;">${tip}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="color: #333; margin-bottom: 15px;">🎯 Activity Optimization</h3>
+                            <ul style="margin: 0; padding-left: 20px;" id="activityTips">
+                                ${optimization.medium.activity_tips.map(tip => `<li style="margin-bottom: 8px;">${tip}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="applyBudgetOptimization()" id="applyBtn" class="btn btn-success" style="margin-right: 10px;">Apply Medium Optimization</button>
+                    <button onclick="closeBudgetModal()" class="btn btn-secondary">Close</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Store optimization data for potential application
+    window.currentOptimization = optimization;
+    window.selectedOptimizationLevel = 'medium';
+}
+
+function closeBudgetModal() {
+    const modal = document.getElementById('budgetModal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+function showOptimizationLevel(level) {
+    // Update button styles
+    document.querySelectorAll('.optimization-btn').forEach(btn => {
+        btn.style.background = 'white';
+        btn.style.color = btn.id === 'mediumBtn' ? '#28a745' : '#dc3545';
+    });
+    
+    const activeBtn = document.getElementById(level + 'Btn');
+    const activeColor = level === 'medium' ? '#28a745' : '#dc3545';
+    activeBtn.style.background = activeColor;
+    activeBtn.style.color = 'white';
+    
+    // Update content
+    const optimization = window.currentOptimization[level];
+    const originalBudget = window.currentOptimization.original_budget;
+    
+    // Update savings display
+    const savingsTitle = document.getElementById('savingsTitle');
+    const budgetSummary = document.getElementById('budgetSummary');
+    const applyBtn = document.getElementById('applyBtn');
+    
+    const titleText = level === 'medium' ? '📊 Medium Optimization' : '🔥 High Optimization';
+    savingsTitle.innerHTML = `💰 ${titleText} - Save ${optimization.savings}`;
+    budgetSummary.innerHTML = `Original: ${originalBudget} → Optimized: ${optimization.optimized_budget}`;
+    applyBtn.innerHTML = `Apply ${level.charAt(0).toUpperCase() + level.slice(1)} Optimization`;
+    
+    // Update tips
+    document.getElementById('accommodationTips').innerHTML = 
+        optimization.accommodation_tips.map(tip => `<li style="margin-bottom: 8px;">${tip}</li>`).join('');
+    document.getElementById('foodTips').innerHTML = 
+        optimization.food_tips.map(tip => `<li style="margin-bottom: 8px;">${tip}</li>`).join('');
+    document.getElementById('transportTips').innerHTML = 
+        optimization.transport_tips.map(tip => `<li style="margin-bottom: 8px;">${tip}</li>`).join('');
+    document.getElementById('activityTips').innerHTML = 
+        optimization.activity_tips.map(tip => `<li style="margin-bottom: 8px;">${tip}</li>`).join('');
+    
+    // Update color scheme for high optimization
+    const resultsDiv = document.querySelector('#optimizationResults > div');
+    if (level === 'high') {
+        resultsDiv.style.background = '#f8d7da';
+        resultsDiv.style.borderColor = '#dc3545';
+        savingsTitle.style.color = '#721c24';
+        budgetSummary.style.color = '#721c24';
+    } else {
+        resultsDiv.style.background = '#d4edda';
+        resultsDiv.style.borderColor = '#28a745';
+        savingsTitle.style.color = '#155724';
+        budgetSummary.style.color = '#155724';
+    }
+    
+    window.selectedOptimizationLevel = level;
+}
+
+function applyBudgetOptimization() {
+    const level = window.selectedOptimizationLevel || 'medium';
+    const optimization = window.currentOptimization[level];
+    const levelText = level === 'medium' ? 'Medium' : 'High';
+    
+    if (confirm(`Apply ${levelText} optimization to your itinerary? This will update your budget to ${optimization.optimized_budget} and show cost-saving alternatives.`)) {
+        // Update the budget display on the page
+        const budgetElements = document.querySelectorAll('.budget-amount');
+        const totalBudgetElement = document.querySelector('.total-budget .budget-amount');
+        
+        if (totalBudgetElement) {
+            totalBudgetElement.textContent = optimization.optimized_budget;
+        }
+        
+        // Update the budget in header meta section
+        const budgetMetaElements = document.querySelectorAll('.meta-value');
+        budgetMetaElements.forEach(element => {
+            if (element.textContent.includes('₹')) {
+                element.textContent = optimization.optimized_budget;
+            }
+        });
+        
+        // Update individual budget breakdown items if they exist
+        const budgetBreakdownItems = document.querySelectorAll('.budget-item .budget-amount');
+        if (budgetBreakdownItems.length > 0) {
+            // Calculate new breakdown based on optimized budget
+            const optimizedTotal = parseInt(optimization.optimized_budget.replace(/[₹,]/g, ''));
+            budgetBreakdownItems.forEach((item, index) => {
+                const parentText = item.parentElement.textContent;
+                if (parentText.includes('Accommodation')) {
+                    item.textContent = `₹${(optimizedTotal * 0.4).toLocaleString()}`;
+                } else if (parentText.includes('Food')) {
+                    item.textContent = `₹${(optimizedTotal * 0.3).toLocaleString()}`;
+                } else if (parentText.includes('Transportation')) {
+                    item.textContent = `₹${(optimizedTotal * 0.2).toLocaleString()}`;
+                } else if (parentText.includes('Activities')) {
+                    item.textContent = `₹${(optimizedTotal * 0.1).toLocaleString()}`;
+                }
+            });
+        }
+        
+        // Add optimization badge
+        const headerElement = document.querySelector('.itinerary-header');
+        let optimizationBadge = document.querySelector('.optimization-badge');
+        if (!optimizationBadge) {
+            optimizationBadge = document.createElement('div');
+            optimizationBadge.className = 'optimization-badge';
+            optimizationBadge.style.cssText = `
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: ${level === 'medium' ? '#28a745' : '#dc3545'};
+                color: white;
+                padding: 8px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+                z-index: 10;
+            `;
+            headerElement.appendChild(optimizationBadge);
+        }
+        optimizationBadge.innerHTML = `${level === 'medium' ? '📊' : '🔥'} ${levelText} Optimized - Saved ${optimization.savings}`;
+        
+        closeBudgetModal();
+        ParadiseRide.showNotification(`${levelText} budget optimization applied! You saved ${optimization.savings}!`, 'success');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Add fade-in animation
+    const cards = document.querySelectorAll('.itinerary-header, .itinerary-section');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+        
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100);
+    });
+});
+</script>
+{% endblock %}

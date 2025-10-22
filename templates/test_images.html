@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Team Images Test</title>
+    <style>
+        .test-image {
+            width: 150px;
+            height: 150px;
+            margin: 10px;
+            border: 2px solid #ccc;
+            object-fit: cover;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        .image-info {
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Team Images Test</h1>
+    <div class="container">
+        <div class="image-info">
+            <h3>Divesh Bangera</h3>
+            <img src="{{ url_for('static', filename='images/team/divesh.jpg') }}" alt="Divesh" class="test-image">
+            <p>Path: {{ url_for('static', filename='images/team/divesh.jpg') }}</p>
+        </div>
+        
+        <div class="image-info">
+            <h3>Sarvesh Gosavi</h3>
+            <img src="{{ url_for('static', filename='images/team/sarvesh.jpg') }}" alt="Sarvesh" class="test-image">
+            <p>Path: {{ url_for('static', filename='images/team/sarvesh.jpg') }}</p>
+        </div>
+        
+        <div class="image-info">
+            <h3>Poonam Sangle</h3>
+            <img src="{{ url_for('static', filename='images/team/poonam.jpg') }}" alt="Poonam" class="test-image">
+            <p>Path: {{ url_for('static', filename='images/team/poonam.jpg') }}</p>
+        </div>
+        
+        <div class="image-info">
+            <h3>Rutuja Pachupate</h3>
+            <img src="{{ url_for('static', filename='images/team/rutuja.jpg') }}" alt="Rutuja" class="test-image">
+            <p>Path: {{ url_for('static', filename='images/team/rutuja.jpg') }}</p>
+        </div>
+    </div>
+    
+    <script>
+        document.querySelectorAll('.test-image').forEach(img => {
+            img.addEventListener('load', function() {
+                console.log('✅ Loaded successfully:', this.src);
+                this.style.border = '2px solid green';
+            });
+            
+            img.addEventListener('error', function() {
+                console.log('❌ Failed to load:', this.src);
+                this.style.border = '2px solid red';
+                this.alt = 'FAILED TO LOAD';
+            });
+        });
+    </script>
+</body>
+</html>

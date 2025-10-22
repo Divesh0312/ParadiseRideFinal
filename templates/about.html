@@ -1,0 +1,548 @@
+{% extends "base.html" %}
+{% set title = "About ParadiseRide" %}
+
+{% block extra_head %}
+<style>
+.about-container {
+    padding: var(--spacing-xl) 0;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    min-height: calc(100vh - 70px);
+}
+
+.hero-section {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+    padding: var(--spacing-2xl);
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+}
+
+.hero-title {
+    font-size: var(--font-size-4xl);
+    font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--spacing-md);
+}
+
+.hero-subtitle {
+    font-size: var(--font-size-xl);
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-lg);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.hero-logo {
+    font-size: 5rem;
+    margin-bottom: var(--spacing-lg);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.features-section {
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-2xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.section-title {
+    text-align: center;
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xl);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.feature-card {
+    text-align: center;
+    padding: var(--spacing-xl);
+    border: 2px solid transparent;
+    border-radius: var(--radius-xl);
+    transition: var(--transition-normal);
+    background: var(--bg-secondary);
+}
+
+.feature-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--spacing-lg);
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-3xl);
+    color: white;
+}
+
+.feature-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.feature-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+
+.feature-list li {
+    padding: var(--spacing-xs) 0;
+    color: var(--text-secondary);
+    position: relative;
+    padding-left: var(--spacing-lg);
+}
+
+.feature-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+.story-section {
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-2xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.story-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-2xl);
+    align-items: center;
+}
+
+.story-text {
+    color: var(--text-secondary);
+    line-height: 1.8;
+    font-size: var(--font-size-lg);
+}
+
+.story-text h3 {
+    color: var(--text-primary);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-md);
+}
+
+.story-image {
+    background: var(--gradient-secondary);
+    border-radius: var(--radius-lg);
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 6rem;
+}
+
+.tech-stack {
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-2xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.tech-item {
+    text-align: center;
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    transition: var(--transition-fast);
+}
+
+.tech-item:hover {
+    border-color: var(--primary-color);
+    background: var(--bg-secondary);
+}
+
+.tech-icon {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-sm);
+    color: var(--primary-color);
+}
+
+.tech-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.tech-purpose {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.stats-section {
+    background: var(--gradient-primary);
+    color: white;
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: var(--font-size-4xl);
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
+    opacity: 0.9;
+}
+
+.stat-label {
+    font-size: var(--font-size-md);
+    opacity: 0.8;
+}
+
+.cta-section {
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-2xl);
+    text-align: center;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: var(--spacing-lg);
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: var(--spacing-xl);
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: var(--font-size-3xl);
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .story-content {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-xl);
+    }
+    
+    .story-image {
+        height: 300px;
+    }
+    
+    .tech-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-container">
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-logo">
+                <i class="fas fa-map-marked-alt"></i>
+            </div>
+            <h1 class="hero-title">About ParadiseRide</h1>
+            <p class="hero-subtitle">
+                Your AI-powered travel companion that understands your mood and crafts perfect journeys across India. 
+                We believe that every trip should be as unique as your emotions and dreams.
+            </p>
+        </div>
+
+        <!-- Features Section -->
+        <div class="features-section">
+            <h2 class="section-title">What Makes Us Special</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="feature-title">AI-Powered Recommendations</h3>
+                    <p class="feature-description">
+                        Our advanced AI analyzes your mood and preferences to suggest destinations that perfectly match your current state of mind.
+                    </p>
+                    <ul class="feature-list">
+                        <li>Mood-based destination matching</li>
+                        <li>Personalized travel suggestions</li>
+                        <li>Smart itinerary generation</li>
+                        <li>Real-time preference learning</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Comprehensive India Coverage</h3>
+                    <p class="feature-description">
+                        From the snow-capped Himalayas to the tropical beaches of Kerala, discover the incredible diversity of India.
+                    </p>
+                    <ul class="feature-list">
+                        <li>50+ curated destinations</li>
+                        <li>Hidden gems & popular spots</li>
+                        <li>Local culture insights</li>
+                        <li>Budget-friendly options</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <h3 class="feature-title">Smart Itinerary Planning</h3>
+                    <p class="feature-description">
+                        Get detailed, day-by-day itineraries with activities, dining, and accommodation recommendations tailored to your budget.
+                    </p>
+                    <ul class="feature-list">
+                        <li>Detailed daily schedules</li>
+                        <li>Budget breakdown</li>
+                        <li>Local recommendations</li>
+                        <li>Printable itineraries</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Story Section -->
+        <div class="story-section">
+            <h2 class="section-title">Our Story</h2>
+            <div class="story-content">
+                <div class="story-text">
+                    <h3>Born from Wanderlust</h3>
+                    <p>
+                        ParadiseRide was born from a simple observation: traditional travel planning doesn't account for how we feel. 
+                        Sometimes you need the serenity of mountains, other times the energy of a bustling city. We realized that 
+                        your mood is the best compass for your next adventure.
+                    </p>
+                    <p>
+                        Our team of travel enthusiasts and AI experts came together to create something unique - a platform that 
+                        doesn't just show you places to visit, but understands why you want to travel and matches you with 
+                        destinations that will truly resonate with your current emotional state.
+                    </p>
+                    <p>
+                        Every recommendation is crafted with care, every itinerary is designed to create memories, and every 
+                        suggestion aims to give you exactly what your soul needs - whether it's adventure, peace, culture, or 
+                        simply a change of scenery.
+                    </p>
+                </div>
+                <div class="story-image">
+                    <i class="fas fa-heart"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tech Stack -->
+        <div class="tech-stack">
+            <h2 class="section-title">Built with Modern Technology</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <div class="tech-icon">
+                        <i class="fab fa-python"></i>
+                    </div>
+                    <div class="tech-name">Flask</div>
+                    <div class="tech-purpose">Backend Framework</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="tech-name">SQLAlchemy</div>
+                    <div class="tech-purpose">Database ORM</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="tech-name">AI Engine</div>
+                    <div class="tech-purpose">Mood Analysis</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">
+                        <i class="fab fa-html5"></i>
+                    </div>
+                    <div class="tech-name">HTML5</div>
+                    <div class="tech-purpose">Structure</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">
+                        <i class="fab fa-css3-alt"></i>
+                    </div>
+                    <div class="tech-name">CSS3</div>
+                    <div class="tech-purpose">Modern Styling</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">
+                        <i class="fab fa-js"></i>
+                    </div>
+                    <div class="tech-name">JavaScript</div>
+                    <div class="tech-purpose">Interactivity</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <h2 class="section-title" style="color: white; margin-bottom: var(--spacing-xl);">ParadiseRide by Numbers</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Destinations Covered</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Mood Categories</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1000+</div>
+                    <div class="stat-label">Itineraries Generated</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">AI Assistant</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="cta-section">
+            <h2 class="section-title">Ready to Discover Your Perfect Destination?</h2>
+            <p style="font-size: var(--font-size-lg); color: var(--text-secondary); margin-bottom: var(--spacing-xl); max-width: 600px; margin-left: auto; margin-right: auto;">
+                Let our AI understand your mood and guide you to the destination that matches your soul. 
+                Your perfect journey is just one conversation away.
+            </p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('chatbot_page') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-robot"></i> Start Chatting
+                </a>
+                <a href="{{ url_for('signup') }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </a>
+                <a href="{{ url_for('team') }}" class="btn btn-outline btn-lg">
+                    <i class="fas fa-users"></i> Meet Our Team
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate stats numbers
+    const observerOptions = {
+        threshold: 0.7,
+        rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const statNumbers = entry.target.querySelectorAll('.stat-number');
+                statNumbers.forEach((element, index) => {
+                    const text = element.textContent;
+                    const number = parseInt(text.replace(/\D/g, '')) || 0;
+                    const suffix = text.replace(/[\d,]/g, '');
+                    
+                    if (number > 0) {
+                        setTimeout(() => {
+                            ParadiseRide.animateCounter(element, 0, number, 2000, suffix);
+                        }, index * 200);
+                    }
+                });
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    const statsSection = document.querySelector('.stats-section');
+    if (statsSection) {
+        observer.observe(statsSection);
+    }
+
+    // Add stagger animation to cards
+    const cards = document.querySelectorAll('.hero-section, .features-section, .story-section, .tech-stack, .stats-section, .cta-section');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = `opacity 0.8s ease ${index * 0.1}s, transform 0.8s ease ${index * 0.1}s`;
+        
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100);
+    });
+
+    // Add hover effects to feature cards
+    const featureCards = document.querySelectorAll('.feature-card');
+    featureCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,389 @@
+{% extends "base.html" %}
+{% set title = "Dashboard" %}
+
+{% block extra_head %}
+<style>
+.dashboard-container {
+    padding: var(--spacing-2xl) 0;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    min-height: calc(100vh - 70px);
+}
+
+.dashboard-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.dashboard-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.dashboard-subtitle {
+    color: var(--text-secondary);
+    font-size: var(--font-size-lg);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.stat-card {
+    background: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    transition: var(--transition-normal);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto var(--spacing-md);
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-2xl);
+    color: white;
+}
+
+.stat-number {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dashboard-section {
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    margin-bottom: var(--spacing-xl);
+}
+
+.section-header {
+    background: var(--gradient-primary);
+    color: white;
+    padding: var(--spacing-lg);
+}
+
+.section-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    margin: 0;
+}
+
+.section-content {
+    padding: var(--spacing-lg);
+}
+
+.search-item, .itinerary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-md);
+    transition: var(--transition-fast);
+}
+
+.search-item:hover, .itinerary-item:hover {
+    background: var(--bg-secondary);
+    border-color: var(--primary-color);
+}
+
+.item-content {
+    flex: 1;
+}
+
+.item-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.item-meta {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.mood-badge {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--primary-color);
+    color: white;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.status-badge {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.status-upcoming { background: #dbeafe; color: #1e40af; }
+.status-active { background: #dcfce7; color: #166534; }
+.status-completed { background: #f3f4f6; color: #6b7280; }
+
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    color: var(--text-secondary);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: var(--spacing-lg);
+    opacity: 0.5;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-xl);
+}
+
+.action-card {
+    background: var(--gradient-secondary);
+    color: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-xl);
+    text-align: center;
+    text-decoration: none;
+    transition: var(--transition-normal);
+}
+
+.action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    text-decoration: none;
+    color: white;
+}
+
+.action-icon {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-md);
+}
+
+.action-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+}
+
+.action-description {
+    font-size: var(--font-size-sm);
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .search-item, .itinerary-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .mood-badge, .status-badge {
+        margin-top: var(--spacing-sm);
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Welcome back, {{ current_user.name.split()[0] }}! 👋</h1>
+            <p class="dashboard-subtitle">Here's your travel planning overview</p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="stat-number">{{ stats.search_count }}</div>
+                <div class="stat-label">Mood Searches</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <div class="stat-number">{{ stats.itinerary_count }}</div>
+                <div class="stat-label">Itineraries Created</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-number">{{ recent_itineraries|length }}</div>
+                <div class="stat-label">Active Plans</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-clock"></i>
+                </div>
+                <div class="stat-number">{{ stats.member_since }}</div>
+                <div class="stat-label">Member Since</div>
+            </div>
+        </div>
+
+        <!-- Recent Searches Section -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-history"></i> Recent Mood Searches
+                </h2>
+            </div>
+            <div class="section-content">
+                {% if recent_searches %}
+                    {% for search in recent_searches %}
+                        <div class="search-item">
+                            <div class="item-content">
+                                <div class="item-title">{{ search.query }}</div>
+                                <div class="item-meta">{{ search.timestamp.strftime('%B %d, %Y at %I:%M %p') }}</div>
+                            </div>
+                            <div class="mood-badge">{{ search.mood }}</div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>No searches yet</h3>
+                        <p>Start chatting with our AI to get personalized travel recommendations!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recent Itineraries Section -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-route"></i> Your Travel Plans
+                </h2>
+            </div>
+            <div class="section-content">
+                {% if recent_itineraries %}
+                    {% for itinerary in recent_itineraries %}
+                        <div class="itinerary-item">
+                            <div class="item-content">
+                                <div class="item-title">{{ itinerary.title }}</div>
+                                <div class="item-meta">
+                                    <i class="fas fa-map-marker-alt"></i> {{ itinerary.destination }} • 
+                                    <i class="fas fa-calendar"></i> {{ itinerary.start_date.strftime('%b %d') }} - {{ itinerary.end_date.strftime('%b %d') }} • 
+                                    <i class="fas fa-rupee-sign"></i> {{ itinerary.budget }}
+                                </div>
+                            </div>
+                            <div>
+                                <span class="status-badge status-{{ itinerary.get_status() }}">{{ itinerary.get_status() }}</span>
+                                <a href="{{ url_for('view_itinerary', itinerary_id=itinerary.id) }}" class="btn btn-primary btn-sm" style="margin-left: 10px;">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-route"></i>
+                        </div>
+                        <h3>No itineraries created yet</h3>
+                        <p>Create your first travel plan by chatting with our AI!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="{{ url_for('chatbot_page') }}" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="action-title">Chat with AI</div>
+                <div class="action-description">Get mood-based destination recommendations</div>
+            </a>
+            
+            <a href="{{ url_for('about') }}" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="action-title">Learn More</div>
+                <div class="action-description">Discover how ParadiseRide works</div>
+            </a>
+            
+            <a href="{{ url_for('team') }}" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="action-title">Meet the Team</div>
+                <div class="action-description">Learn about the people behind ParadiseRide</div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate stat numbers
+    document.querySelectorAll('.stat-number').forEach((element, index) => {
+        const finalNumber = parseInt(element.textContent);
+        element.textContent = '0';
+        
+        setTimeout(() => {
+            ParadiseRide.animateCounter(element, 0, finalNumber, 1000);
+        }, index * 200);
+    });
+    
+    // Add fade-in animation to cards
+    const cards = document.querySelectorAll('.stat-card, .dashboard-section, .action-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+        
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100);
+    });
+});
+</script>
+{% endblock %}

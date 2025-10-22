@@ -1,0 +1,764 @@
+{% extends "base.html" %}
+{% set title = "Our Team" %}
+
+{% block extra_head %}
+<style>
+.team-container {
+    padding: var(--spacing-xl) 0;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    min-height: calc(100vh - 70px);
+}
+
+.team-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+    padding: var(--spacing-2xl);
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+}
+
+.team-title {
+    font-size: var(--font-size-4xl);
+    font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--spacing-md);
+}
+
+.team-subtitle {
+    font-size: var(--font-size-xl);
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.team-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: var(--transition-normal);
+    position: relative;
+}
+
+.team-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+}
+
+.team-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: var(--gradient-primary);
+}
+
+.team-avatar {
+    width: 120px;
+    height: 120px;
+    margin: var(--spacing-xl) auto var(--spacing-lg);
+    background: var(--gradient-secondary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-4xl);
+    color: white;
+    border: 4px solid white;
+    box-shadow: var(--shadow-lg);
+}
+
+.team-content {
+    padding: 0 var(--spacing-xl) var(--spacing-xl);
+    text-align: center;
+}
+
+.team-name {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.team-role {
+    font-size: var(--font-size-lg);
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+}
+
+.team-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-lg);
+}
+
+.team-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    justify-content: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.skill-tag {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    border: 1px solid var(--border-color);
+}
+
+.team-social {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+}
+
+.social-link {
+    width: 40px;
+    height: 40px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: var(--transition-fast);
+    font-size: var(--font-size-lg);
+}
+
+.social-link:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+    color: white;
+}
+
+.values-section {
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-2xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.values-title {
+    text-align: center;
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xl);
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.value-item {
+    text-align: center;
+    padding: var(--spacing-lg);
+}
+
+.value-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto var(--spacing-md);
+    background: var(--gradient-secondary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-2xl);
+    color: white;
+}
+
+.value-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.value-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.contact-section {
+    background: var(--gradient-primary);
+    color: white;
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    text-align: center;
+}
+
+.contact-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+}
+
+.contact-description {
+    font-size: var(--font-size-lg);
+    opacity: 0.9;
+    margin-bottom: var(--spacing-xl);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.contact-methods {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(10px);
+}
+
+.contact-icon {
+    font-size: var(--font-size-xl);
+}
+
+.contact-info {
+    text-align: left;
+}
+
+.contact-label {
+    font-size: var(--font-size-sm);
+    opacity: 0.8;
+    margin-bottom: var(--spacing-xs);
+}
+
+.contact-value {
+    font-weight: 600;
+}
+
+.join-team {
+    background: white;
+    color: var(--text-primary);
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    transition: var(--transition-fast);
+    border: 2px solid transparent;
+}
+
+.join-team:hover {
+    background: var(--bg-secondary);
+    border-color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 1200px) {
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .team-card {
+        margin: 0 var(--spacing-md);
+    }
+    
+    .values-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact-methods {
+        grid-template-columns: 1fr;
+    }
+    
+    .team-title {
+        font-size: var(--font-size-3xl);
+    }
+}
+
+/* Animated background for team cards */
+/* Flip Card Styles */
+.team-card {
+    perspective: 1000px;
+    height: 400px;
+}
+
+.team-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+.team-card:hover .team-card-inner {
+    transform: rotateY(180deg);
+}
+
+.team-card-front, .team-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.team-card-front {
+    background: white;
+}
+
+.team-card-back {
+    background: var(--gradient-primary);
+    color: white;
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--spacing-xl);
+}
+
+.specialization-icon {
+    font-size: 4rem;
+    margin-bottom: var(--spacing-lg);
+    opacity: 0.9;
+}
+
+.specialization-title {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+}
+
+.specialization-description {
+    font-size: var(--font-size-lg);
+    line-height: 1.6;
+    opacity: 0.9;
+    margin-bottom: var(--spacing-lg);
+}
+
+.specialization-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    justify-content: center;
+}
+
+.skill-badge {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.team-card::after {
+    display: none;
+}
+
+/* Team member images */
+.team-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: var(--transition-normal);
+}
+
+.team-avatar-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-4xl);
+    color: white;
+    background: var(--gradient-secondary);
+    border-radius: 50%;
+}
+
+.team-card:hover .team-image {
+    transform: scale(1.05);
+}
+
+/* Ensure team avatar container is ready for both image and fallback */
+.team-avatar {
+    position: relative;
+    overflow: hidden;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="team-container">
+    <div class="container">
+        <!-- Team Header -->
+        <div class="team-header">
+            <h1 class="team-title">Meet Our Team</h1>
+            <p class="team-subtitle">
+                The passionate individuals behind ParadiseRide who are dedicated to revolutionizing how you discover and experience travel destinations across India.
+            </p>
+        </div>
+
+        <!-- Team Members -->
+        <div class="team-grid">
+            <!-- Divesh Bangera -->
+            <div class="team-card">
+                <div class="team-card-inner">
+                    <div class="team-card-front">
+                        <div class="team-avatar">
+                            {% set divesh_image = url_for('static', filename='images/team/divesh.jpg') %}
+                            <img src="{{ divesh_image }}" alt="Divesh Bangera" class="team-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="team-avatar-fallback" style="display: none;">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                        </div>
+                        <div class="team-content">
+                            <h3 class="team-name">Divesh Bangera</h3>
+                            <div class="team-role">Electronics and Computer Science Engineering</div>
+                        </div>
+                    </div>
+                    <div class="team-card-back">
+                        <div class="specialization-icon"></div>
+                        <h3 class="specialization-title">UI/UX & Frontend</h3>
+                        <p class="specialization-description">Specializes in creating intuitive user interfaces and seamless user experiences that make travel planning effortless and enjoyable.</p>
+                        <div class="specialization-skills">
+                            <span class="skill-badge">React</span>
+                            <span class="skill-badge">JavaScript</span>
+                            <span class="skill-badge">CSS3</span>
+                            <span class="skill-badge">Figma</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sarvesh Gosavi -->
+            <div class="team-card">
+                <div class="team-card-inner">
+                    <div class="team-card-front">
+                        <div class="team-avatar">
+                            {% set sarvesh_image = url_for('static', filename='images/team/sarvesh.jpg') %}
+                            <img src="{{ sarvesh_image }}" alt="Sarvesh Gosavi" class="team-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="team-avatar-fallback" style="display: none;">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                        </div>
+                        <div class="team-content">
+                            <h3 class="team-name">Sarvesh Gosavi</h3>
+                            <div class="team-role">Electronics and Computer Science Engineering</div>
+                        </div>
+                    </div>
+                    <div class="team-card-back">
+                        <div class="specialization-icon"></div>
+                        <h3 class="specialization-title">AI Integration</h3>
+                        <p class="specialization-description">Expert in artificial intelligence and machine learning, powering our intelligent travel recommendations and chatbot capabilities.</p>
+                        <div class="specialization-skills">
+                            <span class="skill-badge">Python</span>
+                            <span class="skill-badge">TensorFlow</span>
+                            <span class="skill-badge">NLP</span>
+                            <span class="skill-badge">API Integration</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Poonam Sangle -->
+            <div class="team-card">
+                <div class="team-card-inner">
+                    <div class="team-card-front">
+                        <div class="team-avatar">
+                            {% set poonam_image = url_for('static', filename='images/team/poonam.jpg') %}
+                            <img src="{{ poonam_image }}" alt="Poonam Sangle" class="team-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="team-avatar-fallback" style="display: none;">
+                                <i class="fas fa-database"></i>
+                            </div>
+                        </div>
+                        <div class="team-content">
+                            <h3 class="team-name">Poonam Sangle</h3>
+                            <div class="team-role">Electronics and Computer Science Engineering</div>
+                        </div>
+                    </div>
+                    <div class="team-card-back">
+                        <div class="specialization-icon"></div>
+                        <h3 class="specialization-title">Backend & Database</h3>
+                        <p class="specialization-description">Ensures robust backend architecture and efficient database management for seamless travel data processing and storage.</p>
+                        <div class="specialization-skills">
+                            <span class="skill-badge">Flask</span>
+                            <span class="skill-badge">SQL</span>
+                            <span class="skill-badge">MongoDB</span>
+                            <span class="skill-badge">AWS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rutuja Pachupate -->
+            <div class="team-card">
+                <div class="team-card-inner">
+                    <div class="team-card-front">
+                        <div class="team-avatar">
+                            {% set rutuja_image = url_for('static', filename='images/team/rutuja.jpg') %}
+                            <img src="{{ rutuja_image }}" alt="Rutuja Pachupate" class="team-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="team-avatar-fallback" style="display: none;">
+                                <i class="fas fa-server"></i>
+                            </div>
+                        </div>
+                        <div class="team-content">
+                            <h3 class="team-name">Rutuja Pachupate</h3>
+                            <div class="team-role">Electronics and Computer Science Engineering</div>
+                        </div>
+                    </div>
+                    <div class="team-card-back">
+                        <div class="specialization-icon"></div>
+                        <h3 class="specialization-title">Backend & Database</h3>
+                        <p class="specialization-description">Focuses on server-side development and database optimization to deliver fast, reliable travel planning experiences.</p>
+                        <div class="specialization-skills">
+                            <span class="skill-badge">Python</span>
+                            <span class="skill-badge">PostgreSQL</span>
+                            <span class="skill-badge">Redis</span>
+                            <span class="skill-badge">Docker</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Our Values -->
+        <div class="values-section">
+            <h2 class="values-title">Our Values</h2>
+            <div class="values-grid">
+                <div class="value-item">
+                    <div class="value-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="value-title">Passion</h3>
+                    <p class="value-description">
+                        We're driven by genuine love for travel and technology, creating solutions that we ourselves would want to use.
+                    </p>
+                </div>
+                
+                <div class="value-item">
+                    <div class="value-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="value-title">Community</h3>
+                    <p class="value-description">
+                        Building a community of travelers who inspire each other and share authentic experiences from across India.
+                    </p>
+                </div>
+                
+                <div class="value-item">
+                    <div class="value-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3 class="value-title">Innovation</h3>
+                    <p class="value-description">
+                        Constantly pushing boundaries to create new ways of discovering and experiencing travel destinations.
+                    </p>
+                </div>
+                
+                <div class="value-item">
+                    <div class="value-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="value-title">Trust</h3>
+                    <p class="value-description">
+                        Providing reliable, authentic recommendations and protecting your privacy while delivering personalized experiences.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="contact-section">
+            <h2 class="contact-title">Get in Touch</h2>
+            <p class="contact-description">
+                Have questions, suggestions, or just want to say hello? We'd love to hear from you! 
+                Our team is always eager to connect with fellow travel enthusiasts.
+            </p>
+            
+            <div class="contact-methods">
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-info">
+                        <div class="contact-label">Email Us</div>
+                        <div class="contact-value">hello@paradiseride.com</div>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="contact-info">
+                        <div class="contact-label">Call Us</div>
+                        <div class="contact-value">+91 98765 43210</div>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="contact-info">
+                        <div class="contact-label">Visit Us</div>
+                        <div class="contact-value">Mumbai, India</div>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <div class="contact-info">
+                        <div class="contact-label">Contribute</div>
+                        <div class="contact-value">GitHub Repository</div>
+                    </div>
+                </div>
+            </div>
+            
+            <a href="mailto:careers@paradiseride.com" class="join-team">
+                <i class="fas fa-rocket"></i>
+                Join Our Team
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add stagger animation to team cards
+    const teamCards = document.querySelectorAll('.team-card');
+    teamCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = `opacity 0.8s ease ${index * 0.2}s, transform 0.8s ease ${index * 0.2}s`;
+        
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100);
+    });
+
+    // Add stagger animation to sections
+    const sections = document.querySelectorAll('.team-header, .values-section, .contact-section');
+    sections.forEach((section, index) => {
+        section.style.opacity = '0';
+        section.style.transform = 'translateY(20px)';
+        section.style.transition = `opacity 0.6s ease ${index * 0.1 + 0.5}s, transform 0.6s ease ${index * 0.1 + 0.5}s`;
+        
+        setTimeout(() => {
+            section.style.opacity = '1';
+            section.style.transform = 'translateY(0)';
+        }, 100);
+    });
+
+    // Add pulse animation to social links on hover
+    const socialLinks = document.querySelectorAll('.social-link');
+    socialLinks.forEach(link => {
+        link.addEventListener('mouseenter', function() {
+            this.style.animation = 'pulse 0.6s ease-in-out';
+        });
+        
+        link.addEventListener('animationend', function() {
+            this.style.animation = '';
+        });
+    });
+
+    // Add floating animation to value icons
+    const valueIcons = document.querySelectorAll('.value-icon');
+    valueIcons.forEach((icon, index) => {
+        setTimeout(() => {
+            icon.style.animation = `float 3s ease-in-out infinite ${index * 0.5}s`;
+        }, 1000);
+    });
+});
+
+// Enhanced image loading with fallback
+const teamImages = document.querySelectorAll('.team-image');
+teamImages.forEach(img => {
+    img.addEventListener('load', function() {
+        console.log(`Successfully loaded: ${this.src}`);
+        this.style.display = 'block';
+        this.nextElementSibling.style.display = 'none';
+    });
+    
+    img.addEventListener('error', function() {
+        console.log(`Failed to load: ${this.src}`);
+        this.style.display = 'none';
+        this.nextElementSibling.style.display = 'flex';
+    });
+    
+    // Force reload if image is not visible
+    if (img.complete && img.naturalHeight === 0) {
+        console.log(`Image not loaded properly: ${img.src}`);
+        img.style.display = 'none';
+        img.nextElementSibling.style.display = 'flex';
+    } else if (img.complete && img.naturalHeight > 0) {
+        console.log(`Image already loaded: ${img.src}`);
+        img.style.display = 'block';
+        img.nextElementSibling.style.display = 'none';
+    }
+});
+
+// Add CSS animations via JavaScript
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}

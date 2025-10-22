@@ -1,0 +1,481 @@
+{% extends "base.html" %}
+{% set title = "Let Your Mood Decide Your Adventure" %}
+
+{% block extra_head %}
+<style>
+/* Landing Page Specific Styles */
+.hero-section {
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9)), 
+                url('https://images.unsplash.com/photo-1570168007204-dfb528c6958f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2126&q=80');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-content {
+    max-width: 800px;
+    padding: var(--spacing-2xl);
+    z-index: 2;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-lg);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-2xl);
+    opacity: 0.95;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+.hero-cta {
+    animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+.floating-elements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.floating-icon {
+    position: absolute;
+    font-size: 2rem;
+    opacity: 0.3;
+    animation: float 6s ease-in-out infinite;
+}
+
+.floating-icon:nth-child(1) {
+    top: 15%;
+    left: 10%;
+    animation-delay: -2s;
+}
+
+.floating-icon:nth-child(2) {
+    top: 25%;
+    right: 15%;
+    animation-delay: -4s;
+}
+
+.floating-icon:nth-child(3) {
+    bottom: 30%;
+    left: 20%;
+    animation-delay: -1s;
+}
+
+.floating-icon:nth-child(4) {
+    bottom: 20%;
+    right: 25%;
+    animation-delay: -3s;
+}
+
+.features-section {
+    padding: var(--spacing-2xl) 0;
+    background: var(--bg-secondary);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-2xl);
+    margin-top: var(--spacing-2xl);
+}
+
+.feature-card {
+    background: white;
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+    transition: var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-primary);
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--spacing-lg);
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    box-shadow: var(--shadow-md);
+}
+
+.feature-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+    color: var(--text-primary);
+}
+
+.feature-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.destinations-section {
+    padding: var(--spacing-2xl) 0;
+    background: white;
+}
+
+.destinations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-2xl);
+}
+
+.destination-card {
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    transition: var(--transition-normal);
+    position: relative;
+    height: 300px;
+}
+
+.destination-card:hover {
+    transform: scale(1.02);
+    box-shadow: var(--shadow-xl);
+}
+
+.destination-image {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.destination-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    color: white;
+    padding: var(--spacing-xl);
+}
+
+.destination-name {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+}
+
+.destination-mood {
+    opacity: 0.9;
+    font-size: var(--font-size-sm);
+}
+
+.cta-section {
+    padding: var(--spacing-2xl) 0;
+    background: var(--gradient-primary);
+    color: white;
+    text-align: center;
+}
+
+.cta-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-lg);
+}
+
+.cta-content p {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-2xl);
+    opacity: 0.95;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-xl);
+    }
+    
+    .destinations-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+    
+    .cta-content h2 {
+        font-size: 2rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section" id="hero">
+    <div class="floating-elements">
+        <i class="floating-icon fas fa-mountain"></i>
+        <i class="floating-icon fas fa-umbrella-beach"></i>
+        <i class="floating-icon fas fa-pagoda"></i>
+        <i class="floating-icon fas fa-ship"></i>
+    </div>
+    
+    <div class="hero-content">
+        <h1 class="hero-title">Let Your Mood Decide Your Next Adventure</h1>
+        <p class="hero-subtitle">
+            Discover the perfect destinations across India based on how you feel. 
+            Our AI-powered chatbot understands your emotions and curates personalized travel experiences just for you.
+        </p>
+        <div class="hero-cta">
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('chatbot_page') }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-robot"></i>
+                    Start Chatting
+                </a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-rocket"></i>
+                    Start Your Adventure
+                </a>
+            {% endif %}
+            <a href="#features" class="btn btn-outline btn-lg" style="margin-left: 1rem; border-color: white; color: white;">
+                <i class="fas fa-info-circle"></i>
+                Learn More
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section" id="features">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-title">Why Choose ParadiseRide?</h2>
+            <p class="section-subtitle">
+                Experience travel planning like never before with our emotion-driven AI technology
+            </p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="feature-title">AI-Powered Recommendations</h3>
+                <p class="feature-description">
+                    Our advanced AI analyzes your mood and emotions to suggest destinations that perfectly match your current state of mind.
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <h3 class="feature-title">Curated Indian Destinations</h3>
+                <p class="feature-description">
+                    Explore handpicked destinations across India, from serene backwaters to adventurous mountain peaks, all tailored to your preferences.
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h3 class="feature-title">Personalized Itineraries</h3>
+                <p class="feature-description">
+                    Get detailed day-by-day itineraries with activities, food recommendations, and travel tips customized for your trip duration and budget.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Popular Destinations Section -->
+<section class="destinations-section" id="destinations">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-title">Popular Mood-Based Destinations</h2>
+            <p class="section-subtitle">
+                Discover where your emotions can take you across incredible India
+            </p>
+        </div>
+        
+        <div class="destinations-grid">
+            <div class="destination-card">
+                <div class="destination-image" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+                    <div class="destination-overlay">
+                        <h3 class="destination-name">Kerala Backwaters</h3>
+                        <p class="destination-mood">Perfect for: Calm & Peaceful moods</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="destination-card">
+                <div class="destination-image" style="background-image: url('https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80');">
+                    <div class="destination-overlay">
+                        <h3 class="destination-name">Rajasthan Palaces</h3>
+                        <p class="destination-mood">Perfect for: Romantic & Royal moods</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="destination-card">
+                <div class="destination-image" style="background-image: url('https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+                    <div class="destination-overlay">
+                        <h3 class="destination-name">Leh-Ladakh</h3>
+                        <p class="destination-mood">Perfect for: Adventurous & Thrill-seeking moods</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="destination-card">
+                <div class="destination-image" style="background-image: url('https://images.unsplash.com/photo-1571115764595-644a1f56a55c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+                    <div class="destination-overlay">
+                        <h3 class="destination-name">Goa Beaches</h3>
+                        <p class="destination-mood">Perfect for: Excited & Party moods</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="destination-card">
+                <div class="destination-image" style="background-image: url('https://images.unsplash.com/photo-1544735716-392fe2489ffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80');">
+                    <div class="destination-overlay">
+                        <h3 class="destination-name">Himachal Hills</h3>
+                        <p class="destination-mood">Perfect for: Stressed & Need-to-unwind moods</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="destination-card">
+                <div class="destination-image" style="background-image: url('https://images.unsplash.com/photo-1587474260584-136574528ed5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+                    <div class="destination-overlay">
+                        <h3 class="destination-name">Mumbai Streets</h3>
+                        <p class="destination-mood">Perfect for: Happy & Energetic moods</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="cta-section" id="cta">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Ready to Discover Your Perfect Destination?</h2>
+            <p>
+                Join thousands of travelers who have found their perfect getaway through mood-based recommendations.
+            </p>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('chatbot_page') }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-comments"></i>
+                    Start Chatting Now
+                </a>
+            {% else %}
+                <a href="{{ url_for('signup') }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-user-plus"></i>
+                    Join ParadiseRide Today
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Intersection Observer for animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Animate feature cards
+    document.querySelectorAll('.feature-card').forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = `opacity 0.6s ease ${index * 0.2}s, transform 0.6s ease ${index * 0.2}s`;
+        observer.observe(card);
+    });
+
+    // Animate destination cards
+    document.querySelectorAll('.destination-card').forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+        observer.observe(card);
+    });
+
+    // Parallax effect for hero section
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const hero = document.querySelector('.hero-section');
+        if (hero) {
+            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+        }
+    });
+});
+</script>
+{% endblock %}

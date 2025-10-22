@@ -1,0 +1,421 @@
+{% extends "base.html" %}
+{% set title = "Login" %}
+
+{% block extra_head %}
+<style>
+.auth-container {
+    min-height: calc(100vh - 70px);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    padding: var(--spacing-2xl);
+    width: 100%;
+    max-width: 450px;
+    animation: scaleIn 0.6s ease-out;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.auth-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--spacing-md);
+}
+
+.auth-logo i {
+    font-size: var(--font-size-2xl);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.auth-title {
+    font-size: var(--font-size-2xl);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.auth-subtitle {
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+}
+
+.auth-form {
+    margin-bottom: var(--spacing-xl);
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-control {
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) 3rem;
+    border: 2px solid #e1e5e9;
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-base);
+    transition: var(--transition-fast);
+    background: white;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-control:focus + .form-icon {
+    color: var(--primary-color);
+}
+
+.form-icon {
+    position: absolute;
+    left: var(--spacing-md);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    font-size: var(--font-size-lg);
+    transition: var(--transition-fast);
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-check-input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+}
+
+.form-check-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.auth-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.btn-auth {
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-auth::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: var(--transition-slow);
+}
+
+.btn-auth:hover::before {
+    left: 100%;
+}
+
+.auth-footer {
+    text-align: center;
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid #e1e5e9;
+}
+
+.auth-link {
+    color: var(--primary-color);
+    font-weight: 500;
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.auth-link:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+.password-toggle {
+    position: absolute;
+    right: var(--spacing-md);
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: var(--font-size-lg);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.password-toggle:hover {
+    color: var(--primary-color);
+}
+
+/* Demo credentials info */
+.demo-info {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    font-size: var(--font-size-sm);
+}
+
+.demo-info h4 {
+    color: #0369a1;
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+}
+
+.demo-info p {
+    color: #0c4a6e;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.demo-credentials {
+    background: rgba(255, 255, 255, 0.8);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    margin-top: var(--spacing-sm);
+    font-family: 'Courier New', monospace;
+    font-size: var(--font-size-xs);
+}
+
+/* Animations */
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .auth-container {
+        padding: var(--spacing-md) var(--spacing-sm);
+    }
+    
+    .auth-card {
+        padding: var(--spacing-xl);
+    }
+    
+    .auth-title {
+        font-size: var(--font-size-xl);
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <i class="fas fa-plane"></i>
+                <span>ParadiseRide</span>
+            </div>
+            <h1 class="auth-title">Welcome Back!</h1>
+            <p class="auth-subtitle">Sign in to continue your travel journey</p>
+        </div>
+
+        <!-- Demo credentials info -->
+        <div class="demo-info">
+            <h4><i class="fas fa-info-circle"></i> Demo Account</h4>
+            <p>Try our chatbot with the demo account:</p>
+            <div class="demo-credentials">
+                Email: demo@paradiseride.com<br>
+                Password: demo123
+            </div>
+        </div>
+
+        <form method="POST" class="auth-form" id="login-form">
+            <div class="form-group">
+                <i class="form-icon fas fa-envelope"></i>
+                <input 
+                    type="email" 
+                    name="email" 
+                    class="form-control" 
+                    placeholder="Enter your email"
+                    value="{{ request.form.email or '' }}"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <i class="form-icon fas fa-lock"></i>
+                <input 
+                    type="password" 
+                    name="password" 
+                    class="form-control" 
+                    placeholder="Enter your password"
+                    id="password"
+                    required
+                >
+                <button type="button" class="password-toggle" onclick="togglePassword()">
+                    <i class="fas fa-eye" id="password-icon"></i>
+                </button>
+            </div>
+
+            <div class="form-check">
+                <input type="checkbox" name="remember" class="form-check-input" id="remember">
+                <label for="remember" class="form-check-label">
+                    Remember me for 30 days
+                </label>
+            </div>
+
+            <div class="auth-actions">
+                <button type="submit" class="btn btn-primary btn-auth">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+            </div>
+        </form>
+
+        <div class="auth-footer">
+            <p>
+                Don't have an account? 
+                <a href="{{ url_for('signup') }}" class="auth-link">Create one here</a>
+            </p>
+            <p style="margin-top: var(--spacing-md); font-size: var(--font-size-sm); color: var(--text-light);">
+                <a href="#" class="auth-link">Forgot your password?</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const passwordIcon = document.getElementById('password-icon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        passwordIcon.className = 'fas fa-eye-slash';
+    } else {
+        passwordInput.type = 'password';
+        passwordIcon.className = 'fas fa-eye';
+    }
+}
+
+// Form validation and animations
+document.getElementById('login-form').addEventListener('submit', function(e) {
+    const email = this.querySelector('input[name="email"]');
+    const password = this.querySelector('input[name="password"]');
+    let hasErrors = false;
+
+    // Reset previous error states
+    email.classList.remove('error', 'shake');
+    password.classList.remove('error', 'shake');
+
+    // Basic validation
+    if (!email.value.trim()) {
+        email.classList.add('error', 'shake');
+        hasErrors = true;
+    }
+
+    if (!password.value.trim()) {
+        password.classList.add('error', 'shake');
+        hasErrors = true;
+    }
+
+    if (hasErrors) {
+        e.preventDefault();
+        return;
+    }
+
+    // Show loading state
+    const submitButton = this.querySelector('button[type="submit"]');
+    const originalContent = submitButton.innerHTML;
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
+    submitButton.disabled = true;
+
+    // Re-enable button after 5 seconds (in case of server error)
+    setTimeout(() => {
+        submitButton.innerHTML = originalContent;
+        submitButton.disabled = false;
+    }, 5000);
+});
+
+// Auto-fill demo credentials
+document.addEventListener('DOMContentLoaded', function() {
+    const demoInfo = document.querySelector('.demo-info');
+    if (demoInfo) {
+        demoInfo.addEventListener('click', function() {
+            document.querySelector('input[name="email"]').value = 'demo@paradiseride.com';
+            document.querySelector('input[name="password"]').value = 'demo123';
+        });
+        demoInfo.style.cursor = 'pointer';
+        demoInfo.title = 'Click to auto-fill demo credentials';
+    }
+});
+
+// Remove shake animation after it completes
+document.querySelectorAll('.form-control').forEach(input => {
+    input.addEventListener('animationend', function() {
+        this.classList.remove('shake');
+    });
+});
+
+// Focus states
+document.querySelectorAll('.form-control').forEach(input => {
+    input.addEventListener('focus', function() {
+        this.parentElement.classList.add('focused');
+    });
+    
+    input.addEventListener('blur', function() {
+        this.parentElement.classList.remove('focused');
+    });
+});
+</script>
+{% endblock %}
